@@ -5,8 +5,9 @@ env:
   DOCKER_HUB_REPOSITORY: ${{ vars.DOCKER_HUB_REPOSITORY }}
   DOCKER_HUB_PASS: ${{ secrets.DOCKER_HUB_PASS }}
   DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_DEFAULT_REGION: eu-central-1
 jobs:
   build:
     name: Build Docker Image
@@ -21,15 +22,10 @@ jobs:
   deploy:
     name: Deploy Docker Image
     runs-on: ubuntu-latest
+    container: "docker.io/tponomarenko/docker_aws_kubectl:latest"
     needs: build
     steps:
-      - name: copy private key
-        run: echo "$SSH_PRIVATE_KEY" > ./github
-      - name: copy public key
-        run: echo "$SSH_PUBLIC_KEY" > ./github.pub
-      - name: file permissions
-        run: chmod 0600 ./github*
-      - name: debug
-        run: ls -l
-      - name: debug 2
-        run: cat ./github*
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Deploy phonebook to k8s
+        run: sh pipeline_scripts/deploy.sh
