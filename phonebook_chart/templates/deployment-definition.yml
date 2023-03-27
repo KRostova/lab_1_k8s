@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: phonebook
-        image: docker.io/annettestr/phonebook:latest
+        image: {{ .Values.imageURL }}:{{ .Values.imageVersion }}
         ports:
         - containerPort: 8090
