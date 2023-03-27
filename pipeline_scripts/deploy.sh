@@ -1,5 +1,5 @@
 #! /bin/sh
 
-aws eks update-kubeconfig --name sre_course
+set -uex
 
-cat ~/.kube/config
+aws eks update-kubeconfig --name sre_course
