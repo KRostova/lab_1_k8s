@@ -1,31 +1,31 @@
-name: build and deploy
-on: push
+name: build and deploy #name of pipeline
+on: push #подiя яка викликає запуск pipeline (у нас push)
 #this pipeline must build a docker image and deploy it on K8s cluster
-env: 
-  DOCKER_HUB_REPOSITORY: ${{ vars.DOCKER_HUB_REPOSITORY }}
-  DOCKER_HUB_PASS: ${{ secrets.DOCKER_HUB_PASS }}
-  DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_DEFAULT_REGION: eu-central-1
-jobs:
+env: #змінні, які доступні для кроків усіх завдань у пайплайні
+  DOCKER_HUB_REPOSITORY: ${{ vars.DOCKER_HUB_REPOSITORY }} #назва репозиторiю на docker.io
+  DOCKER_HUB_PASS: ${{ secrets.DOCKER_HUB_PASS }} #пароль вiд DOCKER HUB
+  DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }} #iм'я користувача на DOCKER HUB
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} #ключ згенерований на AWS
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} #ID ключ на AWS
+  AWS_DEFAULT_REGION: eu-central-1 #регiон AWS (AWS EU Frankfurt Region)
+jobs: #завдання для виконання якi за замовченням виконуются паралельно
   build:
-    name: Build Docker Image
-    runs-on: ubuntu-latest
-    container: "docker:latest"
-    steps:
+    name: Build Docker Image #назва job для pipeline
+    runs-on: ubuntu-latest #середовище де запускається цей job (build)
+    container: "docker:latest" #контейнер, у якому будуть виконуватися кроки цієї job
+    steps: #кроки виконання
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2 #checkout робить pull репозиторію та гілки, в якому запущений. Таким чином, ми отримуємо доступ до коду.
       - name: Build and push image
-        run: sh pipeline_scripts/build.sh
+        run: sh pipeline_scripts/build.sh #запуск скрипту з файлу build.sh
 
   deploy:
-    name: Deploy Docker Image
-    runs-on: ubuntu-latest
-    container: "docker.io/tponomarenko/docker_aws_kubectl:latest"
-    needs: build
-    steps:
+    name: Deploy Docker Image #назва job для pipeline
+    runs-on: ubuntu-latest #середовище де запускається цей job (deploy)
+    container: "docker.io/tponomarenko/docker_aws_kubectl:latest" #контейнер, у якому будуть виконуватися кроки цієї job
+    needs: build #щоб job deploy запускався пiсля job build
+    steps: #кроки виконання
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2 #checkout робить pull репозиторію та гілки, в якому запущений. Таким чином, ми отримуємо доступ до коду.
       - name: Deploy phonebook to k8s
-        run: sh pipeline_scripts/deploy.sh
+        run: sh pipeline_scripts/deploy.sh #запуск скрипту з файлу deploy.sh
