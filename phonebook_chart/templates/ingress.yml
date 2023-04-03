@@ -1,5 +1,5 @@
 apiVersion: networking.k8s.io/v1
-kind: Ingress
+kind: NodePort
 metadata:
   name: phonebook
   annotations:
@@ -16,4 +16,3 @@ spec:
                 name: phonebook
                 port:
                   number: 80
-                  
