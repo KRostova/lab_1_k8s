@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NodePort
+metadata:
+  name: phonebook
+  annotations:
+    kubernetes.io/ingress.class: alb
+
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: phonebook
+                port:
+                  number: 80
