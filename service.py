@@ -98,4 +98,8 @@ def put_record(record_id):
         del old_record['_id']
         return old_record, 200
 
+@service.get('/health-check')
+def health_check():
+    return "healthy", 200
+
 service.run("0.0.0.0", port=8090)
