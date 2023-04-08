@@ -1,6 +1,7 @@
 from flask import Flask, request
 from uuid import uuid4
 
+from flask_cors import CORS
 
 """
 /records/
@@ -32,6 +33,7 @@ RECORD_BOOK_DB = mongo_client["phonebook"]
 RECORDS_COLLECTION = RECORD_BOOK_DB["records"]
 
 service = Flask("my-service")
+cors = CORS(service)
 
 
 @service.get("/records/")
