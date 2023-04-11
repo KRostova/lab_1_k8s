@@ -10,6 +10,7 @@ metadata:
 spec:
   rules:
     - http:
+        host: api.sre-phonebook.online
         paths:
           - path: /
             pathType: Prefix
