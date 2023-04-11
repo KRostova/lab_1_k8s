@@ -9,8 +9,8 @@ metadata:
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
 spec:
   rules:
-    - http:
-        host: api.sre-phonebook.online
+    - host: api.sre-phonebook.online 
+      http:
         paths:
           - path: /
             pathType: Prefix
